@@ -6,7 +6,8 @@ import os
 # Flask Import
 from flask import Flask , request , redirect , render_template , url_for 
 from flask import jsonify , abort , make_response 
-import MySQLdb
+#import MySQLdb
+import pymsql
 
 # Toekn and URL check import
 from check_encode import random_token , url_check
@@ -53,8 +54,9 @@ def analytics(short_url):
 @app.route('/' , methods=['GET' , 'POST'])
 def index():
 
-	conn = MySQLdb.connect(host , user , passwrd, db)
-	cursor = conn.cursor()
+	#conn = MySQLdb.connect(host , user , passwrd, db)
+	conn = pymysql.connect(host, user, passwrd, db)
+        cursor = conn.cursor()
 	
 	# Return the full table to displat on index.
 	list_sql = "SELECT * FROM WEB_URL;"
