@@ -1,20 +1,15 @@
 from flask import Flask , request , jsonify , make_response
 import pymysql
-import config
+#import config
+from config import db_host, db_user, db_passwrd, db_db, config_domain
 from check_encode import random_token , url_check
 from display_list import list_data
 
 shorty_api = Flask(__name__)
 shorty_api.config.from_object('config')
 
-shorty_host = config.domain
+shorty_host = config_domain
 
-# MySQL configurations
-
-host = config.host
-user = config.user
-passwrd = config.passwrd
-db = config.db
 
 # api Block
 
@@ -43,7 +38,7 @@ def create_short_url():
 					else:
 						tag_url = ''
 
-				conn = pymysql.connect(host , user , passwrd , db)
+				conn = pymysql.connect(db_host , db_user , db_passwrd , db_db)
 				cursor = conn.cursor()
 				check_row = "SELECT S_URL FROM WEB_URL WHERE S_URL = %s FOR UPDATE"
 				cursor.execute(check_row,(token_string,))

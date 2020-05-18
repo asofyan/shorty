@@ -8,7 +8,7 @@ from flask import Flask, request, redirect, render_template, url_for
 from flask import jsonify, abort, make_response
 # import MySQLdb
 import pymysql
-from importlib import reload
+#from importlib import reload
 
 # Toekn and URL check import
 from check_encode import random_token, url_check
@@ -17,7 +17,8 @@ from display_list import list_data
 from sql_table import mysql_table
 
 # Config import
-import config
+#import config
+from config import db_db, db_host, db_passwrd, db_user, config_domain
 
 # Import Loggers
 import logging
@@ -27,7 +28,8 @@ import traceback
 
 # Setting UTF-8 encoding
 
-reload(sys)
+# utf-8 is already set as string in python3
+#reload(sys)
 #sys.setdefaultencoding('UTF-8')
 os.putenv('LANG', 'en_US.UTF-8')
 os.putenv('LC_ALL', 'en_US.UTF-8')
@@ -35,14 +37,14 @@ os.putenv('LC_ALL', 'en_US.UTF-8')
 app = Flask(__name__)
 app.config.from_object('config')
 
-shorty_host = config.domain
+shorty_host = config_domain
 
 # MySQL configurations
 
-host = config.host
-user = config.user
-passwrd = config.passwrd
-db = config.db
+host = db_host
+user = db_user
+passwrd = db_passwrd
+db = db_db
 
 
 @app.route('/analytics/<short_url>')

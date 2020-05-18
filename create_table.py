@@ -1,6 +1,6 @@
 # Script to build mysql table
 
-import config
+from config import db_host, db_user, db_passwrd, db_db
 import pymysql
 from sql_table import mysql_table
 
@@ -15,13 +15,9 @@ web server.
 You need to have a database already defined ( SHORTY for e.g is 
 already present .).
 '''
-host = config.host
-user = config.user
-passwrd = config.passwrd
-db = config.db
 
 create_table = mysql_table
-conn = pymysql.connect(host , user , passwrd, db)
+conn = pymysql.connect(db_host , db_user , db_passwrd, db_db)
 cursor = conn.cursor()
 cursor.execute(create_table)
 

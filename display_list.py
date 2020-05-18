@@ -1,14 +1,15 @@
 import sqlite3
-import config
+#import config
+from config import db_host, db_db, db_user, db_passwrd
 import pymysql
 
 
 # MySQL configurations
 
-host = config.host
-user = config.user	
-passwrd = config.passwrd
-db = config.db
+host = db_host
+user = db_user	
+passwrd = db_passwrd
+db = db_db
 
 
 def list_data(shorty_url):
