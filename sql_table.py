@@ -2,9 +2,10 @@
 	SQL Table Create Statement , 
 	Follow the same order as given.
 '''
+from config import db_table
 
 mysql_table = '''
-		CREATE TABLE TEST1(
+		CREATE TABLE %s(
 		ID INT AUTO_INCREMENT,
 		URL VARCHAR(512),
 		S_URL VARCHAR(80), 
@@ -22,3 +23,4 @@ mysql_table = '''
 		OTHER_PLATFORM INT DEFAULT 0 , 
 		PRIMARY KEY(ID));
 		'''
+mysql_table = mysql_table % db_table

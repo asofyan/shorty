@@ -14,7 +14,7 @@ db_host = "localhost"
 db_user = "root"
 db_passwrd = "password"
 db_db = "shorty"
-
+db_table = "WEB_URL"
 # Domain Host
 
 '''
@@ -26,6 +26,6 @@ config_domain = "http://localhost:5000/"
 # copy the above constants to local_config.py
 # to put your own configuration
 try:
-    from .local_config import *
+	from local_config import *
 except:
-    pass
+	pass

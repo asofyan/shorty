@@ -1,6 +1,6 @@
 # Script to build mysql table
 
-from config import db_host, db_user, db_passwrd, db_db
+from config import db_host, db_user, db_passwrd, db_db 
 import pymysql
 from sql_table import mysql_table
 

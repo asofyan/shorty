@@ -18,7 +18,7 @@ from sql_table import mysql_table
 
 # Config import
 #import config
-from config import db_db, db_host, db_passwrd, db_user, config_domain
+from config import db_table,  db_db, db_host, db_passwrd, db_user, config_domain
 
 # Import Loggers
 import logging
@@ -62,7 +62,7 @@ def index():
 	cursor = conn.cursor()
 	
 	# Return the full table to displat on index.
-	list_sql = "SELECT * FROM WEB_URL;"
+	list_sql = "SELECT * FROM %s;"%db_table
 	cursor.execute(list_sql)
 	result_all_fetch = cursor.fetchall()
 
@@ -197,5 +197,5 @@ if __name__ == '__main__':
 	logger = logging.getLogger('tdm')
 	logger.setLevel(logging.ERROR)
 	logger.addHandler(handler)
-	app.run(host='127.0.0.1' , port=5000)
+	app.run(host='0.0.0.0' , port=5000)
 
