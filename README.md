@@ -27,7 +27,7 @@ python ./app.py
 ## Prerequisites
 
 This project requires Flask and MySQL . 
-And MySQLdb python module for connection.
+And MySQLdb python module for connection. For Python3, ported to pymysql.
 You can install it using the following commands . 
 
 ```

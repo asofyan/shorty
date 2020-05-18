@@ -1,16 +1,17 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 
 import sys
 import os
 
 # Flask Import
-from flask import Flask , request , redirect , render_template , url_for 
-from flask import jsonify , abort , make_response 
-#import MySQLdb
-import pymsql
+from flask import Flask, request, redirect, render_template, url_for
+from flask import jsonify, abort, make_response
+# import MySQLdb
+import pymysql
+from importlib import reload
 
 # Toekn and URL check import
-from check_encode import random_token , url_check
+from check_encode import random_token, url_check
 from display_list import list_data
 
 from sql_table import mysql_table
@@ -27,7 +28,7 @@ import traceback
 # Setting UTF-8 encoding
 
 reload(sys)
-sys.setdefaultencoding('UTF-8')
+#sys.setdefaultencoding('UTF-8')
 os.putenv('LANG', 'en_US.UTF-8')
 os.putenv('LC_ALL', 'en_US.UTF-8')
 
@@ -43,20 +44,20 @@ user = config.user
 passwrd = config.passwrd
 db = config.db
 
+
 @app.route('/analytics/<short_url>')
 def analytics(short_url):
 
-	info_fetch , counter_fetch , browser_fetch , platform_fetch = list_data(short_url)
-	return render_template("data.html" , host = shorty_host,info = info_fetch ,counter = counter_fetch ,\
-	 browser = browser_fetch , platform = platform_fetch)
+	info_fetch, counter_fetch, browser_fetch, platform_fetch = list_data(
+	    short_url)
+	return render_template("data.html", host=shorty_host, info=info_fetch, counter=counter_fetch,
+	 browser=browser_fetch, platform=platform_fetch)
 
 
-@app.route('/' , methods=['GET' , 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def index():
-
-	#conn = MySQLdb.connect(host , user , passwrd, db)
-    conn = pymysql.connect(host, user, passwrd, db)
-        cursor = conn.cursor()
+	conn = pymysql.connect(host, user, passwrd, db)
+	cursor = conn.cursor()
 	
 	# Return the full table to displat on index.
 	list_sql = "SELECT * FROM WEB_URL;"
@@ -107,8 +108,7 @@ def index():
 
 @app.route('/<short_url>')
 def reroute(short_url):
-
-	conn = MySQLdb.connect(host , user , passwrd, db)
+	conn = pymysql.connect(host , user , passwrd, db)
 	cursor = conn.cursor()
 	platform = request.user_agent.platform
 	browser =  request.user_agent.browser
@@ -161,7 +161,7 @@ def search():
 	if s_tag == "":
 		return render_template('index.html', error = "Please enter a search term")
 	else:
-		conn = MySQLdb.connect(host , user , passwrd, db)
+		conn = pymysql.connect(host , user , passwrd, db)
 		cursor = conn.cursor()
 		
 		search_tag_sql = "SELECT * FROM WEB_URL WHERE TAG = %s" 

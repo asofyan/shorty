@@ -1,6 +1,6 @@
 import sqlite3
 import config
-import MySQLdb
+import pymysql
 
 
 # MySQL configurations
@@ -17,7 +17,7 @@ def list_data(shorty_url):
 		Takes short_url for input.
 		Returns counter , browser , platform ticks. 
 	"""
-	conn = MySQLdb.connect(host , user , passwrd, db)
+	conn = pymysql.connect(host , user , passwrd, db)
 	cursor = conn.cursor()
 	su =[shorty_url]
 	info_sql = "SELECT URL , S_URL ,TAG FROM WEB_URL WHERE S_URL= %s; "

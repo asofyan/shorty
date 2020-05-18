@@ -22,3 +22,8 @@ For now , use http as using https returns a bad error message ,
 For https , use a SSL certificate. ( under works)
 '''
 domain = "http://localhost:5000/"
+
+try:
+    from local_config import *
+except:
+    pass
