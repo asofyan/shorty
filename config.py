@@ -23,7 +23,9 @@ For https , use a SSL certificate. ( under works)
 '''
 domain = "http://localhost:5000/"
 
+# copy the above constants to local_config.py
+# to put your own configuration
 try:
-    from local_config import *
+    from .local_config import *
 except:
     pass
