@@ -55,7 +55,7 @@ def analytics(short_url):
 def index():
 
 	#conn = MySQLdb.connect(host , user , passwrd, db)
-	conn = pymysql.connect(host, user, passwrd, db)
+    conn = pymysql.connect(host, user, passwrd, db)
         cursor = conn.cursor()
 	
 	# Return the full table to displat on index.
