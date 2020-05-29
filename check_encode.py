@@ -29,3 +29,13 @@ def url_check(url):
 			return False
 	except:
 		return False
+
+
+def check_prefix(url):
+	p = urlparse.urlparse(url, 'https')
+	netloc = p.netloc or p.path
+	path = p.path if p.netloc else ''
+
+	p = urlparse.ParseResult('https', netloc, path, *p[3:])
+	url = p.geturl()
+	return url

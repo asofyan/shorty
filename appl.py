@@ -11,7 +11,7 @@ import pymysql
 #from importlib import reload
 
 # Toekn and URL check import
-from check_encode import random_token, url_check
+from check_encode import random_token, url_check, check_prefix
 from display_list import list_data
 
 from sql_table import mysql_table
@@ -47,6 +47,7 @@ passwrd = db_passwrd
 db = db_db
 
 
+
 @app.route('/analytics/<short_url>')
 def analytics(short_url):
 
@@ -76,8 +77,9 @@ def index():
 		else:
 			token_string = custom_suff
 		if og_url != '':
-			if url_check(og_url) == True:
-				
+			#if url_check(og_url) == True:
+			og_url = check_prefix(og_url)
+			if og_url:	
 				# Check's for existing suffix 
 				check_row = "SELECT S_URL FROM WEB_URL WHERE S_URL = %s FOR UPDATE"
 				cursor.execute(check_row,(token_string,))
@@ -119,7 +121,7 @@ def reroute(short_url):
 	# Platform , Browser vars
 	
 	browser_dict = {'firefox': 0 , 'chrome':0 , 'safari':0 , 'other':0}
-	platform_dict = {'windows':0 , 'iphone':0 , 'android':0 , 'linux':0 , 'macos':0 , 'other':0}
+	platforms_dict = {'windows':0 , 'iphone':0 , 'android':0 , 'linux':0 , 'macos':0 , 'other':0}
 
 	# Analytics
 	if browser in browser_dict:
@@ -127,10 +129,10 @@ def reroute(short_url):
 	else:								
 		browser_dict['other'] += 1
 	
-	if platform in platform_dict.iterkeys():
-		platform_dict[platform] += 1
+	if platform in platforms_dict.keys():
+		platforms_dict[platform] += 1
 	else:
-		platform_dict['other'] += 1
+		platforms_dict['other'] += 1
 			
 	cursor.execute("SELECT URL FROM WEB_URL WHERE S_URL = %s;" ,(short_url,) )
 
@@ -144,8 +146,8 @@ def reroute(short_url):
 				SAFARI = SAFARI+{og_safari} , OTHER_BROWSER =OTHER_BROWSER+ {og_oth_brow} , ANDROID = ANDROID +{og_andr} , IOS = IOS +{og_ios},\
 				WINDOWS = WINDOWS+{og_windows} , LINUX = LINUX+{og_linux}  , MAC =MAC+ {og_mac} , OTHER_PLATFORM =OTHER_PLATFORM+ {og_plat_other} WHERE S_URL = %s;".\
 				format(tn = "WEB_URL" , og_counter = counter , og_chrome = browser_dict['chrome'] , og_firefox = browser_dict['firefox'],\
-				og_safari = browser_dict['safari'] , og_oth_brow = browser_dict['other'] , og_andr = platform_dict['android'] , og_ios = platform_dict['iphone'] ,\
-				og_windows = platform_dict['windows'] , og_linux = platform_dict['linux'] , og_mac = platform_dict['macos'] , og_plat_other = platform_dict['other'])
+				og_safari = browser_dict['safari'] , og_oth_brow = browser_dict['other'] , og_andr = platforms_dict['android'] , og_ios = platforms_dict['iphone'] ,\
+				og_windows = platforms_dict['windows'] , og_linux = platforms_dict['linux'] , og_mac = platforms_dict['macos'] , og_plat_other = platforms_dict['other'])
 		res_update = cursor.execute(counter_sql, (short_url, ))
 		conn.commit()
 		conn.close()
