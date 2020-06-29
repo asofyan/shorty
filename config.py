@@ -15,10 +15,15 @@ db_user = "root"
 db_passwrd = "password"
 db_db = "shorty"
 db_table = "WEB_URL"
+
+# Basic Auth Config
+username = os.environ.get('HANOMAN_USERNAME', 'admin')
+password = os.environ.get('HANOMAN_PASSWORD', '1234')
+
 # Domain Host
 
 '''
-For now , use http as using https returns a bad error message , 
+For now , use http as using https returns a bad error message ,
 For https , use a SSL certificate. ( under works)
 '''
 config_domain = "http://localhost:5000/"

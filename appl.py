@@ -6,6 +6,7 @@ import os
 # Flask Import
 from flask import Flask, request, redirect, render_template, url_for
 from flask import jsonify, abort, make_response
+from werkzeug.security import generate_password_hash, check_password_hash
 # import MySQLdb
 import pymysql
 #from importlib import reload
@@ -18,7 +19,7 @@ from sql_table import mysql_table
 
 # Config import
 #import config
-from config import db_table,  db_db, db_host, db_passwrd, db_user, config_domain
+from config import db_table,  db_db, db_host, db_passwrd, db_user, config_domain, username, password
 
 # Import Loggers
 import logging
@@ -26,6 +27,8 @@ from logging.handlers import RotatingFileHandler
 from time import strftime
 import traceback
 
+from flask_httpauth import HTTPBasicAuth
+auth = HTTPBasicAuth()
 # Setting UTF-8 encoding
 
 # utf-8 is already set as string in python3
@@ -47,6 +50,16 @@ passwrd = db_passwrd
 db = db_db
 
 
+users = {
+    username: generate_password_hash(password),
+}
+
+@auth.verify_password
+def verify_password(username, password):
+    if username in users and \
+            check_password_hash(users.get(username), password):
+        return username
+
 
 @app.route('/analytics/<short_url>')
 def analytics(short_url):
@@ -58,16 +71,17 @@ def analytics(short_url):
 
 
 @app.route('/', methods=['GET', 'POST'])
+@auth.login_required
 def index():
 	conn = pymysql.connect(host, user, passwrd, db)
 	cursor = conn.cursor()
-	
+
 	# Return the full table to displat on index.
 	list_sql = "SELECT * FROM %s;"%db_table
 	cursor.execute(list_sql)
 	result_all_fetch = cursor.fetchall()
 
-		
+
 	if request.method == 'POST':
 		og_url = request.form.get('url_input')
 		custom_suff = request.form.get('url_custom')
@@ -79,8 +93,8 @@ def index():
 		if og_url != '':
 			#if url_check(og_url) == True:
 			og_url = check_prefix(og_url)
-			if og_url:	
-				# Check's for existing suffix 
+			if og_url:
+				# Check's for existing suffix
 				check_row = "SELECT S_URL FROM WEB_URL WHERE S_URL = %s FOR UPDATE"
 				cursor.execute(check_row,(token_string,))
 				check_fetch = cursor.fetchone()
@@ -104,11 +118,11 @@ def index():
 		else:
 			e = "Enter a URL."
 			return render_template('index.html' , table = result_all_fetch, host = shorty_host,error = e)
-	else:	
+	else:
 		e = ''
 		return render_template('index.html',table = result_all_fetch ,host = shorty_host, error = e )
-	
-# Rerouting funciton	
+
+# Rerouting funciton
 
 @app.route('/<short_url>')
 def reroute(short_url):
@@ -119,28 +133,28 @@ def reroute(short_url):
 	counter = 1
 
 	# Platform , Browser vars
-	
+
 	browser_dict = {'firefox': 0 , 'chrome':0 , 'safari':0 , 'other':0}
 	platforms_dict = {'windows':0 , 'iphone':0 , 'android':0 , 'linux':0 , 'macos':0 , 'other':0}
 
 	# Analytics
 	if browser in browser_dict:
 		browser_dict[browser] += 1
-	else:								
+	else:
 		browser_dict['other'] += 1
-	
+
 	if platform in platforms_dict.keys():
 		platforms_dict[platform] += 1
 	else:
 		platforms_dict['other'] += 1
-			
+
 	cursor.execute("SELECT URL FROM WEB_URL WHERE S_URL = %s;" ,(short_url,) )
 
 	try:
 		new_url = cursor.fetchone()[0]
 		print(new_url)
-		# Update Counters 
-		
+		# Update Counters
+
 		counter_sql = "\
 				UPDATE {tn} SET COUNTER = COUNTER + {og_counter} , CHROME = CHROME + {og_chrome} , FIREFOX = FIREFOX+{og_firefox} ,\
 				SAFARI = SAFARI+{og_safari} , OTHER_BROWSER =OTHER_BROWSER+ {og_oth_brow} , ANDROID = ANDROID +{og_andr} , IOS = IOS +{og_ios},\
@@ -167,8 +181,8 @@ def search():
 	else:
 		conn = pymysql.connect(host , user , passwrd, db)
 		cursor = conn.cursor()
-		
-		search_tag_sql = "SELECT * FROM WEB_URL WHERE TAG = %s" 
+
+		search_tag_sql = "SELECT * FROM WEB_URL WHERE TAG = %s"
 		cursor.execute(search_tag_sql , (s_tag, ) )
 		search_tag_fetch = cursor.fetchall()
 		conn.close()
@@ -200,4 +214,3 @@ if __name__ == '__main__':
 	logger.setLevel(logging.ERROR)
 	logger.addHandler(handler)
 	app.run(host='0.0.0.0' , port=5000)
-
