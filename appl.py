@@ -6,7 +6,7 @@ import os
 # Flask Import
 from flask import Flask, request, redirect, render_template, url_for
 from flask import jsonify, abort, make_response
-from werkzeug.security import generate_password_hash, check_password_hash
+
 # import MySQLdb
 import pymysql
 #from importlib import reload
@@ -19,7 +19,7 @@ from sql_table import mysql_table
 
 # Config import
 #import config
-from config import db_table,  db_db, db_host, db_passwrd, db_user, config_domain, username, password
+from config import db_table,  db_db, db_host, db_passwrd, db_user, config_domain
 
 # Import Loggers
 import logging
@@ -27,8 +27,8 @@ from logging.handlers import RotatingFileHandler
 from time import strftime
 import traceback
 
-from flask_httpauth import HTTPBasicAuth
-auth = HTTPBasicAuth()
+from auth import auth
+
 # Setting UTF-8 encoding
 
 # utf-8 is already set as string in python3
@@ -48,18 +48,6 @@ host = db_host
 user = db_user
 passwrd = db_passwrd
 db = db_db
-
-
-users = {
-    username: generate_password_hash(password),
-}
-
-@auth.verify_password
-def verify_password(username, password):
-    if username in users and \
-            check_password_hash(users.get(username), password):
-        return username
-
 
 @app.route('/analytics/<short_url>')
 def analytics(short_url):

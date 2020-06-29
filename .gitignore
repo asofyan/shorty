@@ -1,6 +1,6 @@
 *.pyc
 local_config.py
 .vscode
-/shorty.log
+shorty.log
 *shorty.log
 **/.venv/*
