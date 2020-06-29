@@ -16,6 +16,7 @@ shorty_host = config_domain
 # api Block
 
 @shorty_api.route('/api/v1/shorten' , methods= ['POST'])
+@auth.login_required
 def create_short_url():
 	'''
 		Takes long _url as url, custom string(opt),
