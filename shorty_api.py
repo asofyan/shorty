@@ -2,8 +2,10 @@ from flask import Flask , request , jsonify , make_response
 import pymysql
 #import config
 from config import db_host, db_user, db_passwrd, db_db, config_domain
-from check_encode import random_token , url_check
+from check_encode import random_token, check_prefix
 from display_list import list_data
+
+from auth import auth
 
 shorty_api = Flask(__name__)
 shorty_api.config.from_object('config')
@@ -14,16 +16,16 @@ shorty_host = config_domain
 # api Block
 
 @shorty_api.route('/api/v1/shorten' , methods= ['POST'])
-def create_short_url():	
+def create_short_url():
 	'''
-		Takes long _url as url, custom string(opt), 
-		tag(opt) for input and returns short_url  
-	'''	
+		Takes long _url as url, custom string(opt),
+		tag(opt) for input and returns short_url
+	'''
 	if request.method == 'POST':
 		if 'url' in request.args :
 			og_url = request.args['url']
-			
-			if url_check(og_url) is True:
+
+			if check_prefix(og_url):
 				if 'custom' in request.args :
 					token_string = request.args['custom']
 					if 'tag' in request.args:
@@ -49,11 +51,11 @@ def create_short_url():
 						INSERT INTO WEB_URL(URL , S_URL , TAG) VALUES( %s, %s , %s)
 						"""
 					result_cur = cursor.execute(insert_row ,(og_url , token_string , tag_url,))
-					
+
 					conn.commit()
 					conn.close()
 
-					short_url = shorty_host+token_string 
+					short_url = shorty_host+token_string
 					long_url = og_url
 					data = jsonify({
 						'long_url' : og_url,
@@ -61,7 +63,7 @@ def create_short_url():
 						'custom' : token_string,
 						'tag' : tag_url
 					})
-				
+
 					return make_response(data , 200)
 				else:
 					data = jsonify({'error':'suffix already present'})
@@ -79,8 +81,8 @@ def create_short_url():
 @shorty_api.route('/api/v1/expand' , methods= ['GET'])
 def retrieve_short_url():
 	'''
-		Takes api input as short url and returns 
-		long_url with analytics such as 
+		Takes api input as short url and returns
+		long_url with analytics such as
 		total clicks , platform and browser clicks
 	'''
 	if request.method == 'GET':
@@ -117,7 +119,7 @@ def retrieve_short_url():
 							'mac' : platform[4],
 							'other_platform' :platform[5]
 							},
-						'tag' : info[2] 
+						'tag' : info[2]
 					})
 				return make_response(data,200)
 		else:

@@ -4,13 +4,13 @@ import string
 
 def random_token(size = 6):
 	"""
-	Generates a random string of 6 chars , use size argument 
+	Generates a random string of 6 chars , use size argument
 	to change the size of token.
-	Returns a valid token of desired size , 
+	Returns a valid token of desired size ,
 	*default is 6 chars
 	"""
-	BASE_LIST = string.digits + string.letters
-	
+	BASE_LIST = string.digits + string.ascii_letters
+
 	token = ''.join((random.choice(BASE_LIST)) for char in range(size))
 	return token
 
