@@ -28,6 +28,7 @@ from time import strftime
 import traceback
 
 from auth import auth
+logger = logging.getLogger('tdm')
 
 # Setting UTF-8 encoding
 
@@ -198,7 +199,6 @@ if __name__ == '__main__':
 
 	# Logging handler
 	handler = RotatingFileHandler('shorty.log' , maxBytes=100000 , backupCount = 3)
-	logger = logging.getLogger('tdm')
 	logger.setLevel(logging.ERROR)
 	logger.addHandler(handler)
 	app.run(host='0.0.0.0' , port=5000)
