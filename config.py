@@ -32,5 +32,7 @@ config_domain = "http://localhost:5000/"
 # to put your own configuration
 try:
 	from local_config import *
-except:
-	pass
+except Exception:
+	print('Local config is not found')
+else:
+	print('Local config found')

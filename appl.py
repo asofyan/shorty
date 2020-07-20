@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import http
 import sys
 import os
 
@@ -20,6 +21,7 @@ from sql_table import mysql_table
 # Config import
 #import config
 from config import db_table,  db_db, db_host, db_passwrd, db_user, config_domain
+from libs.web_url import WebUrl
 
 # Import Loggers
 import logging
@@ -29,6 +31,8 @@ import traceback
 
 from auth import auth
 logger = logging.getLogger('tdm')
+
+from blueprints import api
 
 # Setting UTF-8 encoding
 
@@ -62,7 +66,7 @@ def analytics(short_url):
 @app.route('/', methods=['GET', 'POST'])
 @auth.login_required
 def index():
-	conn = pymysql.connect(host, user, passwrd, db)
+	conn = pymysql.connect(db_host , db_user , db_passwrd , db_db)
 	cursor = conn.cursor()
 
 	# Return the full table to displat on index.
@@ -112,17 +116,17 @@ def index():
 		return render_template('index.html',table = result_all_fetch ,host = shorty_host, error = e )
 
 # Rerouting funciton
-
-@app.route('/<short_url>')
+@app.route('/<short_url>', methods=['GET'])
 def reroute(short_url):
-	conn = pymysql.connect(host , user , passwrd, db)
+	print(db_host, db_user, db_passwrd, db_db)
+	conn = pymysql.connect(db_host , db_user , db_passwrd , db_db)
+	web_url = WebUrl(conn)
 	cursor = conn.cursor()
 	platform = request.user_agent.platform
 	browser =  request.user_agent.browser
 	counter = 1
 
 	# Platform , Browser vars
-
 	browser_dict = {'firefox': 0 , 'chrome':0 , 'safari':0 , 'other':0}
 	platforms_dict = {'windows':0 , 'iphone':0 , 'android':0 , 'linux':0 , 'macos':0 , 'other':0}
 
@@ -137,29 +141,14 @@ def reroute(short_url):
 	else:
 		platforms_dict['other'] += 1
 
-	cursor.execute("SELECT URL FROM WEB_URL WHERE S_URL = %s;" ,(short_url,) )
 
-	try:
-		new_url = cursor.fetchone()[0]
-		print(new_url)
-		# Update Counters
-
-		counter_sql = "\
-				UPDATE {tn} SET COUNTER = COUNTER + {og_counter} , CHROME = CHROME + {og_chrome} , FIREFOX = FIREFOX+{og_firefox} ,\
-				SAFARI = SAFARI+{og_safari} , OTHER_BROWSER =OTHER_BROWSER+ {og_oth_brow} , ANDROID = ANDROID +{og_andr} , IOS = IOS +{og_ios},\
-				WINDOWS = WINDOWS+{og_windows} , LINUX = LINUX+{og_linux}  , MAC =MAC+ {og_mac} , OTHER_PLATFORM =OTHER_PLATFORM+ {og_plat_other} WHERE S_URL = %s;".\
-				format(tn = "WEB_URL" , og_counter = counter , og_chrome = browser_dict['chrome'] , og_firefox = browser_dict['firefox'],\
-				og_safari = browser_dict['safari'] , og_oth_brow = browser_dict['other'] , og_andr = platforms_dict['android'] , og_ios = platforms_dict['iphone'] ,\
-				og_windows = platforms_dict['windows'] , og_linux = platforms_dict['linux'] , og_mac = platforms_dict['macos'] , og_plat_other = platforms_dict['other'])
-		res_update = cursor.execute(counter_sql, (short_url, ))
-		conn.commit()
+	url = web_url.get_url_by_code(short_url)
+	if url:
+		web_url.update_counter(short_url, browser_dict, platforms_dict, counter)
 		conn.close()
+		return redirect(url), http.client.FOUND
 
-		return redirect(new_url)
-
-	except Exception as e:
-		e = "Something went wrong.Please try again."
-		return render_template('404.html') ,404
+	return render_template('404.html'), http.client.NOT_FOUND
 
 # Search results
 @app.route('/search' ,  methods=['GET' , 'POST'])
@@ -194,6 +183,9 @@ def exceptions(e):
         timestamp, request.remote_addr, request.method,
         request.scheme, request.full_path, tb)
 	return make_response(e , 405)
+
+
+app.register_blueprint(api.mod, url_prefix='/api')
 
 if __name__ == '__main__':
 
