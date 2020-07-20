@@ -33,6 +33,7 @@ from auth import auth
 logger = logging.getLogger('tdm')
 
 from blueprints import api
+from libs import jatayu
 
 # Setting UTF-8 encoding
 
@@ -118,7 +119,6 @@ def index():
 # Rerouting funciton
 @app.route('/<short_url>', methods=['GET'])
 def reroute(short_url):
-	print(db_host, db_user, db_passwrd, db_db)
 	conn = pymysql.connect(db_host , db_user , db_passwrd , db_db)
 	web_url = WebUrl(conn)
 	cursor = conn.cursor()
@@ -141,14 +141,31 @@ def reroute(short_url):
 	else:
 		platforms_dict['other'] += 1
 
-
 	url = web_url.get_url_by_code(short_url)
+
 	if url:
 		web_url.update_counter(short_url, browser_dict, platforms_dict, counter)
 		conn.close()
 		return redirect(url), http.client.FOUND
 
-	return render_template('404.html'), http.client.NOT_FOUND
+	try:
+		res = jatayu.get_referral_by_code(short_url.upper())
+	except Exception as error:
+		print(error)
+		return jsonify({
+			'error_message': 'Jatayu Connection Error',
+		}), http.client.INTERNAL_SERVER_ERROR
+
+	response = res.json()
+
+	if res.status_code == http.client.NOT_FOUND:
+		return render_template('404.html'), http.client.NOT_FOUND
+
+	if res.status_code != http.client.OK:
+		return jsonify({ 'error_message': 'Jatayu Internal Error', 'error': response}), http.client.INTERNAL_SERVER_ERROR
+
+	url = 'https://nilaiku-rama.microaid.io/profile/' + response['uuid']
+	return redirect(url), http.client.FOUND
 
 # Search results
 @app.route('/search' ,  methods=['GET' , 'POST'])
