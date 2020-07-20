@@ -1,5 +1,5 @@
 from flask import Blueprint
-from . import index, url
+from . import index
 
 mod = Blueprint('api', __name__)
 
