@@ -12,7 +12,6 @@ shorty_api.config.from_object('config')
 
 shorty_host = config_domain
 
-
 # api Block
 
 @shorty_api.route('/api/v1/shorten' , methods= ['POST'])
