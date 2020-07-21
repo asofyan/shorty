@@ -14,7 +14,7 @@ shorty_host = config_domain
 
 # api Block
 
-@shorty_api.route('/api/v1/shorten' , methods= ['POST'])
+@shorty_api.route('/v1/shorten' , methods= ['POST'])
 @auth.login_required
 def create_short_url():
 	'''
@@ -78,7 +78,7 @@ def create_short_url():
 		data = jsonify({'error':'Invalid Method Used'})
 		return make_response(data , 405)
 
-@shorty_api.route('/api/v1/expand' , methods= ['GET'])
+@shorty_api.route('/v1/expand' , methods= ['GET'])
 def retrieve_short_url():
 	'''
 		Takes api input as short url and returns
