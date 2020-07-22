@@ -5,7 +5,7 @@ from config import SHORTY_API_URL, AUTH_HEADER
 URL = SHORTY_API_URL
 
 def shorten(target_url, custom='', tag=''):
-    url = URL + '/v1/shorten'
+    endpoint = URL + '/v1/shorten'
     headers = { 'Authorization': AUTH_HEADER }
     params = { 'url': target_url }
     print('params', params)
@@ -20,7 +20,7 @@ def shorten(target_url, custom='', tag=''):
     print('params', params)
     print('header', headers)
 
-    return requests.post(URL,  headers=headers, params=params)
+    return requests.post(endpoint,  headers=headers, params=params)
 
 def shorten_profile(url, code):
     return shorten(url, custom=code, tag='profile')
