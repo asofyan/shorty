@@ -168,7 +168,7 @@ def reroute(short_url):
 	try:
 		print ('shortening url', url, short_url.upper())
 		res = shorty_api.shorten_profile(url, short_url.upper())
-		print(res.text())
+		res.text
 		res.raise_for_status()
 	except Exception as error:
 		print(error)
