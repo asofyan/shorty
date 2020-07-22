@@ -166,12 +166,10 @@ def reroute(short_url):
 	url = 'https://nilaiku-rama.microaid.io/profile/' + response['uuid']
 
 	try:
-		print ('shortening url', url, short_url.upper())
 		res = shorty_api.shorten_profile(url, short_url.upper())
-		res.text
 		res.raise_for_status()
-	except Exception as error:
-		print(error)
+	except Exception:
+		pass
 
 
 	return redirect(url), http.client.FOUND

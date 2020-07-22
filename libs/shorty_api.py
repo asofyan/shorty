@@ -8,17 +8,12 @@ def shorten(target_url, custom='', tag=''):
     endpoint = URL + '/v1/shorten'
     headers = { 'Authorization': AUTH_HEADER }
     params = { 'url': target_url }
-    print('params', params)
-    print('header', headers)
 
     if custom:
         params['custom'] = custom
 
     if tag:
         params['tag'] = tag
-
-    print('params', params)
-    print('header', headers)
 
     return requests.post(endpoint,  headers=headers, params=params)
 
