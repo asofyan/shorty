@@ -15,6 +15,9 @@ def shorten(url, custom='', tag=''):
     if tag:
         params['tag'] = tag
 
+    print('params', params)
+    print('header', headers)
+
     return requests.post(URL,  headers=headers, params=params)
 
 def shorten_profile(url, code):
