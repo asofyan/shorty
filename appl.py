@@ -165,6 +165,8 @@ def reroute(short_url):
 		return jsonify({ 'error_message': 'Jatayu Internal Error', 'error': response}), http.client.INTERNAL_SERVER_ERROR
 
 	url = 'https://nilaiku-rama.microaid.io/profile/' + response['uuid']
+
+
 	return redirect(url), http.client.FOUND
 
 # Search results

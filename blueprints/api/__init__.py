@@ -8,6 +8,8 @@ mod = Blueprint('api', __name__)
 def home():
     return index.index()
 
+
+
 # @mod.route('/url/<code>', methods=['GET'])
 # def get_url(code):
 #     print('code', code)
