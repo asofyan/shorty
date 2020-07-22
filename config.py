@@ -1,4 +1,4 @@
-import os
+import os, base64
 
 table_name = "WEB_URL"
 
@@ -17,8 +17,10 @@ db_db = "shorty"
 db_table = "WEB_URL"
 
 # Basic Auth Config
-username = os.environ.get('HANOMAN_USERNAME', 'admin')
-password = os.environ.get('HANOMAN_PASSWORD', '1234')
+username = 'microaid'
+password = 'testing123'
+AUTH_HEADER = 'Basic ' + 'bWljcm9haWQ6dGVzdGluZzEyMw=='
+SHORTY_API_URL = 'http://localhost:8000'
 
 # Domain Host
 

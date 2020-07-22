@@ -33,7 +33,7 @@ from auth import auth
 logger = logging.getLogger('tdm')
 
 from blueprints import api
-from libs import jatayu
+from libs import jatayu, shorty_api
 
 # Setting UTF-8 encoding
 
@@ -57,7 +57,6 @@ db = db_db
 
 @app.route('/analytics/<short_url>')
 def analytics(short_url):
-
 	info_fetch, counter_fetch, browser_fetch, platform_fetch = list_data(
 	    short_url)
 	return render_template("data.html", host=shorty_host, info=info_fetch, counter=counter_fetch,
@@ -165,6 +164,11 @@ def reroute(short_url):
 		return jsonify({ 'error_message': 'Jatayu Internal Error', 'error': response}), http.client.INTERNAL_SERVER_ERROR
 
 	url = 'https://nilaiku-rama.microaid.io/profile/' + response['uuid']
+
+	try:
+		shorty_api.shorten_profile(url, short_url.upper())
+	except Exception as error:
+		print(error)
 
 
 	return redirect(url), http.client.FOUND
