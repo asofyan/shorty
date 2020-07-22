@@ -7,7 +7,7 @@ URL = SHORTY_API_URL
 def shorten(url, custom='', tag=''):
     url = URL + '/v1/shorten'
     headers = { 'Authorization': AUTH_HEADER }
-    params = { 'url', url }
+    params = { 'url': url }
     print('params', params)
     print('header', headers)
 
