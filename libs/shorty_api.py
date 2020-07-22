@@ -9,7 +9,7 @@ def shorten(url, custom='', tag=''):
     headers = { 'Authorization': AUTH_HEADER }
     params = { 'url', url }
     print('params', params)
-    print('header', headers
+    print('header', headers)
 
     if custom:
         params['custom'] = custom
