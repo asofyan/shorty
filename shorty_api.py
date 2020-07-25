@@ -1,4 +1,5 @@
 from flask import Flask , request , jsonify , make_response
+from flask_cors import CORS
 import pymysql
 #import config
 from config import db_host, db_user, db_passwrd, db_db, config_domain
@@ -8,6 +9,7 @@ from display_list import list_data
 from auth import auth
 
 shorty_api = Flask(__name__)
+cors = CORS(shorty_api)
 shorty_api.config.from_object('config')
 
 shorty_host = config_domain
