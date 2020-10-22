@@ -70,7 +70,7 @@ def index():
 	cursor = conn.cursor()
 
 	# Return the full table to displat on index.
-	list_sql = "SELECT * FROM %s;"%db_table
+	list_sql = "SELECT * FROM %s ORDER BY ID DESC LIMIT 50;"%db_table
 	cursor.execute(list_sql)
 	result_all_fetch = cursor.fetchall()
 
