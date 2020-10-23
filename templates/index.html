@@ -112,11 +112,11 @@
 	{% endif %}
 
 	<div class="container">
-		{% if offset > 0 %}
+		{% if not error and offset > 0 %}
 			<button id="prev">Prev</button>
 		{% endif %}
 
-		{% if table|length > 0 %}
+		{% if not error and table|length > 0 %}
 			<button id="next">Next</button>
 		{% endif %}
 	</div>
@@ -124,11 +124,20 @@
 </div>
 <script type="text/javascript">
 	var clipboard = new Clipboard('.copy-btn');
+</script>
+{% if table and table|length > 0 %}
+<script type="text/javascript">
   const url = `{{hostname}}`;
 	const prevBtn = document.querySelector('#prev');
 	const nextBtn = document.querySelector('#next');
 	const urlParams = new URLSearchParams(window.location.search);
 	let page = urlParams.get('p') || 1;
+	let sUrl = urlParams.get('s_url') || '';
+	if (sUrl) {
+		nextBtn.style.visibility = 'hidden';
+		prevBtn.style.visibility = 'hidden';
+	}
+
 	page = Number(page)
 	console.log('page', page)
 
@@ -146,9 +155,9 @@
 		});
 	}
 
+	if (sUrl) {
 
-
-
-
+	}
 </script>
+{% endif %}
 </html>

@@ -82,10 +82,10 @@ def index():
 	print('query', list_sql)
 	cursor.execute(list_sql)
 	result_all_fetch = cursor.fetchall()
-	print(result_all_fetch)
 
 
 	if request.method == 'POST':
+		print('post method')
 		og_url = request.form.get('url_input')
 		custom_suff = request.form.get('url_custom')
 		tag_url = request.form.get('url_tag')
@@ -110,17 +110,17 @@ def index():
 					conn.commit()
 					conn.close()
 					e = ''
-					return render_template('index.html' ,shorty_url = shorty_host+token_string , error = e )
+					return render_template('index.html' ,shorty_url = shorty_host+token_string , hostname=SHORTY_URL,  offset=offset, error = e )
 				else:
 					e = "The Custom suffix already exists . Please use another suffix or leave it blank for random suffix."
-					return render_template('index.html' ,table = result_all_fetch, host = shorty_host,error = e)
+					return render_template('index.html' ,table = result_all_fetch, host = shorty_host, hostname=SHORTY_URL, offset=offset, error = e)
 			else:
 				e = "URL entered doesn't seem valid , Enter a valid URL."
-				return render_template('index.html' ,table = result_all_fetch, host = shorty_host,error = e)
+				return render_template('index.html' ,table = result_all_fetch, host = shorty_host, hostname=SHORTY_URL, offset=offset, error = e)
 
 		else:
 			e = "Enter a URL."
-			return render_template('index.html' , table = result_all_fetch, host = shorty_host,error = e)
+			return render_template('index.html' , table = result_all_fetch, host = shorty_host,hostname=SHORTY_URL, offset=offset, error = e)
 	else:
 		e = ''
 		return render_template('index.html',table = result_all_fetch, offset = offset, hostname=SHORTY_URL, host = shorty_host, error = e)
