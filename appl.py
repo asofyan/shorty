@@ -20,7 +20,7 @@ from sql_table import mysql_table
 
 # Config import
 #import config
-from config import db_table,  db_db, db_host, db_passwrd, db_user, config_domain
+from config import db_table,  db_db, db_host, db_passwrd, db_user, config_domain, SHORTY_API_URL, SHORTY_URL
 from libs.web_url import WebUrl
 
 # Import Loggers
@@ -66,13 +66,23 @@ def analytics(short_url):
 @app.route('/', methods=['GET', 'POST'])
 @auth.login_required
 def index():
+	page = request.args.get('p', 1)
+	s_url = request.args.get('s_url', False)
+	offset = int(page) * 5 - 5
+
 	conn = pymysql.connect(db_host , db_user , db_passwrd , db_db)
 	cursor = conn.cursor()
 
 	# Return the full table to displat on index.
-	list_sql = "SELECT * FROM %s ORDER BY ID DESC LIMIT 50;"%db_table
+	if s_url:
+		list_sql = "SELECT * FROM %s WHERE S_URL = '%s' ORDER BY ID DESC LIMIT 5 OFFSET %s;" % (db_table, s_url, offset)
+	else:
+		list_sql = "SELECT * FROM %s ORDER BY ID DESC LIMIT 5 OFFSET %s;" % (db_table, offset)
+
+	print('query', list_sql)
 	cursor.execute(list_sql)
 	result_all_fetch = cursor.fetchall()
+	print(result_all_fetch)
 
 
 	if request.method == 'POST':
@@ -113,7 +123,7 @@ def index():
 			return render_template('index.html' , table = result_all_fetch, host = shorty_host,error = e)
 	else:
 		e = ''
-		return render_template('index.html',table = result_all_fetch ,host = shorty_host, error = e )
+		return render_template('index.html',table = result_all_fetch, offset = offset, hostname=SHORTY_URL, host = shorty_host, error = e)
 
 # Rerouting funciton
 @app.route('/<short_url>', methods=['GET'])

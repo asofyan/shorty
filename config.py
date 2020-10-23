@@ -21,6 +21,7 @@ username = 'microaid'
 password = 'testing123'
 AUTH_HEADER = 'Basic ' + 'bWljcm9haWQ6dGVzdGluZzEyMw=='
 SHORTY_API_URL = 'http://localhost:8000'
+SHORTY_URL = 'http://localhost:5000'
 
 # Domain Host
 

@@ -9,7 +9,7 @@
 	<link rel="stylesheet" type="text/css" href="../static/css/skeleton.css">
 	<link rel="stylesheet" type="text/css" href="../static/css/normalize.css">
 	<link rel="stylesheet" type="text/css" href="../static/css/main.css">
-	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700,900" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700,900" rel="stylesheet">
 </head>
 <body>
 <div class="container  main_header">
@@ -19,7 +19,7 @@
 
 <div class="u-full-width shorty">
 	<div class="container">
-	
+
 	<!-- Search URL block -->
 
 	<div class="search_url_block">
@@ -27,10 +27,18 @@
 		<form method="post" action="/search" name="search_tag_block">
 			<input type="text" name="search_url" placeholder="Search tags ">
 			<button type="submit" class="button-primary search_url_btn" value="Search">Search</button>
-		
+
 		</form>
 	</div>
-	
+
+	<div class="search_url_block">
+
+		<form method="GET" action="/" name="search_tag_block">
+			<input type="text" name="s_url" placeholder="Search by id ">
+			<button type="submit" class="button-primary search_url_btn" value="Search">Search by id</button>
+		</form>
+	</div>
+
 	<!-- end block -->
 
 	<!-- URL Input block -->
@@ -59,11 +67,11 @@
 	<!-- URL Generator Display block -->
 
 	<div class="gen_block">
-	
+
 	<p class="gen_url">
 		Shorty URL is <b><a id="short-url" href="{{shorty_url}}">{{shorty_url}}</a></b>
 	</p>
-	<button class="button-primary copy-btn" data-clipboard-action="copy" data-clipboard-target="#short-url">Copy</button>		
+	<button class="button-primary copy-btn" data-clipboard-action="copy" data-clipboard-target="#short-url">Copy</button>
 	</div>
 	{% endif %}
 
@@ -94,17 +102,53 @@
 				<td style="text-align: center;">{{url[4]}}</td>
 				<td id="info"><a href=" {{url_for('analytics' ,short_url=url[2])}} "><i class="material-icons" >info_outline</i></a></td>
 			</tr>
-			
-		{% endfor %}		
+
+		{% endfor %}
 		</tbody>
 	</table>
 	</div>
 	</div>
 	{% endif %}
 	{% endif %}
+
+	<div class="container">
+		{% if offset > 0 %}
+			<button id="prev">Prev</button>
+		{% endif %}
+
+		{% if table|length > 0 %}
+			<button id="next">Next</button>
+		{% endif %}
+	</div>
 </div>
 </div>
 <script type="text/javascript">
 	var clipboard = new Clipboard('.copy-btn');
+  const url = `{{hostname}}`;
+	const prevBtn = document.querySelector('#prev');
+	const nextBtn = document.querySelector('#next');
+	const urlParams = new URLSearchParams(window.location.search);
+	let page = urlParams.get('p') || 1;
+	page = Number(page)
+	console.log('page', page)
+
+	if (nextBtn) {
+		nextBtn.addEventListener('click', e => {
+			e.preventDefault();
+			window.open(url + '?p=' + (page + 1), '_self')
+		});
+	}
+
+	if (prevBtn) {
+		prevBtn.addEventListener('click', e => {
+			e.preventDefault();
+			window.open(url + '?p=' + (page - 1), '_self')
+		});
+	}
+
+
+
+
+
 </script>
 </html>
