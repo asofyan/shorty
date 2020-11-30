@@ -90,7 +90,7 @@ def retrieve_short_url():
 	if request.method == 'GET':
 		if 'custom' in request.args:
 			token_string = request.args['custom']
-			conn = pymysql.connect(host , user , passwrd , db)
+			conn = pymysql.connect(db_host , db_user , db_passwrd , db_db)
 			cursor = conn.cursor()
 			check_row = "SELECT S_URL FROM WEB_URL WHERE S_URL = %s FOR UPDATE"
 			cursor.execute(check_row,(token_string,))
