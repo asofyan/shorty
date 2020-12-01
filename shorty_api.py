@@ -145,12 +145,23 @@ def all_url():
 		data = jsonify({'error':'Invalid Method Used , Use GET .'})
 		return make_response(data , 405)
 
+	if 'offset' not in request.args and 'limit' not in request.args:
+		data = jsonify({'error' : 'offset and limit must not empty '})
+		return make_response(data,405)
+
+	try:
+		offset = int(request.args['offset'])
+		limit = int(request.args['limit'])
+	except expression as identifier:
+		data = jsonify({'error' : 'Bad Request'})
+		return make_response(data, 400)
+
 	conn = pymysql.connect(db_host , db_user , db_passwrd , db_db, cursorclass=pymysql.cursors.DictCursor)
 
 	try:
 		with conn.cursor() as cursor:
-			sql = 'SELECT * FROM WEB_URL;'
-			cursor.execute(sql)
+			sql = 'SELECT * FROM WEB_URL LIMIT %s OFFSET %s;'
+			cursor.execute(sql, (limit, offset))
 			result = cursor.fetchall()
 
 	finally:
