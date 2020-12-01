@@ -132,6 +132,32 @@ def retrieve_short_url():
 		data = jsonify({'error':'Invalid Method Used , Use GET .'})
 		return make_response(data , 405)
 
+
+@shorty_api.route('/v1/all' , methods= ['GET'])
+@auth.login_required
+def all_url():
+	'''
+		Takes api input as short url and returns
+		long_url with analytics such as
+		total clicks , platform and browser clicks
+	'''
+	if request.method != 'GET':
+		data = jsonify({'error':'Invalid Method Used , Use GET .'})
+		return make_response(data , 405)
+
+	conn = pymysql.connect(db_host , db_user , db_passwrd , db_db, cursorclass=pymysql.cursors.DictCursor)
+
+	try:
+		with conn.cursor() as cursor:
+			sql = 'SELECT * FROM WEB_URL;'
+			cursor.execute(sql)
+			result = cursor.fetchall()
+
+	finally:
+		conn.close()
+
+	return jsonify(result)
+
 # api error Handlers
 
 @shorty_api.errorhandler(404)
